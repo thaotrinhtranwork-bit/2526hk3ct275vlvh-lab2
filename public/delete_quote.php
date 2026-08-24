@@ -36,30 +36,30 @@ if (!$has_access) {
                     $reason = $e->getMessage();
                 }
             } else {
-                $error_message = 'Không tìm thấy trích dẫn để xóa';
+                $error_message = 'Không tìm thấy trích dẫn để xóa.';
             }
-        }
-    } elseif (isset($_GET['id']) && is_numeric($_GET['id']) && (int) $_GET['id'] > 0) {
-        $quote_id = (int) $_GET['id'];
+        } elseif (isset($_GET['id']) && is_numeric($_GET['id']) && (int) $_GET['id'] > 0) {
+            $quote_id = (int) $_GET['id'];
 
-        $query = 'SELECT id, quote, source, favorite FROM quotes WHERE id = ?';
+            $query = 'SELECT id, quote, source, favorite FROM quotes WHERE id = ?';
 
-        try {
-            $pdo = get_database_connection();
-            $statement = $pdo->prepare($query);
-            $statement->execute([$quote_id]);
+            try {
+                $pdo = get_database_connection();
+                $statement = $pdo->prepare($query);
+                $statement->execute([$quote_id]);
 
-            $quote_details = $statement->fetch();
+                $quote_details = $statement->fetch();
 
-            if (!$quote_details) {
+                if (!$quote_details) {
+                    $error_message = 'Không thể lấy trích dẫn này';
+                }
+            } catch (PDOException $e) {
                 $error_message = 'Không thể lấy trích dẫn này';
+                $reason = $e->getMessage();
             }
-        } catch (PDOException $e) {
-            $error_message = 'Không thể lấy trích dẫn này';
-            $reason = $e->getMessage();
+        } else {
+            $error_message = 'Không tìm thấy trích dẫn để xóa.';
         }
-    } else {
-        $error_message = 'Không tìm thấy trích dẫn để xóa.';
     }
 } else {
     $error_message = 'Bạn không có quyền truy cập trang này';
@@ -79,16 +79,23 @@ if (!$has_access) {
 <?php endif; ?>
 
 <?php if ($has_access): ?>
+
     <p>Trang đang được xây dựng...</p>
 
     <?php if ($delete_complete): ?>
+
         <p>Trích dẫn đã bị xóa.</p>
+
     <?php elseif ($has_access && !$delete_complete && !empty($quote_details)): ?>
+
         <form action="delete_quote.php" method="post">
-            <p>Bạn có chắc chắn muốn xóa trích dẫn này?</p>
+
+            <p>Bạn có chắc là muốn xóa trích dẫn này?</p>
 
             <div>
-                <blockquote><?= html_escape($quote_details['quote']) ?></blockquote>
+                <blockquote>
+                    <?= html_escape($quote_details['quote']) ?>
+                </blockquote>
 
                 <p>
                     <?= html_escape($quote_details['source']) ?>
@@ -99,13 +106,24 @@ if (!$has_access) {
                 </p>
             </div>
 
-            <input type="hidden" name="id" value="<?= html_escape((string) $quote_details['id']) ?>">
+            <input
+                type="hidden"
+                name="id"
+                value="<?= html_escape((string) $quote_details['id']) ?>"
+            >
 
             <p>
-                <input type="submit" name="submit" value="Xóa Trích dẫn này!">
+                <input
+                    type="submit"
+                    name="submit"
+                    value="Xóa Trích dẫn này!"
+                >
             </p>
+
         </form>
+
     <?php endif; ?>
 
 <?php endif; ?>
+
 <?php render_page_footer(); ?>

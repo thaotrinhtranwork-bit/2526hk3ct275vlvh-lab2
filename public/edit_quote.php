@@ -111,6 +111,7 @@ if (!$has_access) {
         <?php endif; ?>
 
         <form action="edit_quote.php" method="post">
+
             <p>
                 <label>Trích dẫn
                     <textarea name="quote" rows="5" cols="30"><?= html_escape($form_data['quote']) ?></textarea>
@@ -135,6 +136,7 @@ if (!$has_access) {
             <p>
                 <input type="submit" name="submit" value="Cập nhật Trích dẫn này">
             </p>
+
         </form>
 
     <?php endif; ?>
