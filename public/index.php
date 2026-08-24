@@ -24,6 +24,7 @@ try {
     $reason = $e->getMessage();
 }
 
+
 if ($pdo instanceof PDO) {
     try {
         $statement = $pdo->prepare($query);

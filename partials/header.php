@@ -28,7 +28,26 @@ function get_database_connection(): ?PDO
         return $pdo;
     }
 
-    // Tạo đối tượng PDO để kết nối đến database
+    // Các thông số cấu hình kết nối PostgreSQL
+    $host     = 'localhost';
+    $port     = '5432';
+    $dbname   = 'ct275_lab2';
+    $username = 'postgres';
+    $password = 'ttrinh'; 
+
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+
+    try {
+        // Tạo đối tượng PDO để kết nối đến database
+        $pdo = new PDO($dsn, $username, $password);
+        
+        // Cấu hình để PDO báo lỗi dạng ngoại lệ (Exception) khi viết sai câu lệnh SQL
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+    } catch (PDOException $e) {
+        // Nếu lỗi, hiển thị thông báo lỗi và dừng script ngay lập tức
+        die("Kết nối CSDL thất bại: " . $e->getMessage());
+    }
 
     return $pdo;
 }
